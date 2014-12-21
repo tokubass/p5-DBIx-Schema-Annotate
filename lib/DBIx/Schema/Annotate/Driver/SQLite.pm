@@ -8,7 +8,10 @@ sub table_ddl {
         my $table_name => 'Str',
     );
 
-    my $row = $self->{dbh}->selectrow_hashref(qq!SELECT * FROM sqlite_master WHERE type='table' and name = '$table_name'!);
+    my $sth = $self->{dbh}->prepare(q! SELECT * FROM sqlite_master WHERE type='table' and name = ? !);
+    $sth->execute($table_name);
+
+    my $row = $sth->fetchrow_hashref;
     return $row->{sql};
 }
 
