@@ -1,10 +1,18 @@
 # NAME
 
-DBIx::Schema::Annotate - It's new $module
+DBIx::Schema::Annotate - Add ddl infomation to ORM file
 
 # SYNOPSIS
 
     use DBIx::Schema::Annotate;
+    my $dbh = DBI->connect('....') or die $DBI::errstr;
+    my $annotate = DBIx::Schema::Annotate->new( dbh => $dbh );
+    $annotate->output(
+      dir       => '...',
+    );
+
+    # Amon2 + Teng
+    $ carton exec -- perl -Ilib -MMyApp -MDBIx::Schema::Annotate -e 'my $c = MyApp->bootstrap; DBIx::Schema::Annotate->new( dbh => $c->db->{dbh})->write_files(dir => q!lib/MyApp/DB/Row/!)'
 
 # DESCRIPTION
 

@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Add ddl infomation to ORM file",
    "author" : [
       "tokubass <tokubass@cpan.org>"
    ],
@@ -42,6 +42,10 @@
       },
       "runtime" : {
          "requires" : {
+            "DBIx::Inspector" : "0.03",
+            "IO::All" : "0",
+            "Smart::Args" : "0",
+            "parent" : "0",
             "perl" : "5.008001"
          }
       },
@@ -52,6 +56,17 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tokubass/p5-DBIx-Schema-Annotate/issues"
+      },
+      "homepage" : "https://github.com/tokubass/p5-DBIx-Schema-Annotate",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tokubass/p5-DBIx-Schema-Annotate.git",
+         "web" : "https://github.com/tokubass/p5-DBIx-Schema-Annotate"
+      }
+   },
    "version" : "0.01",
    "x_authority" : "cpan:TOKUBASS"
 }

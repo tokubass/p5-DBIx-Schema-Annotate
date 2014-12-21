@@ -2,23 +2,101 @@ package DBIx::Schema::Annotate;
 use 5.008001;
 use strict;
 use warnings;
+use DBIx::Inspector;
+use Smart::Args;
+use IO::All;
+use File::Spec::Functions qw/catfile/;
+use Module::Load ();
 
 our $VERSION = "0.01";
 
+our $BLOCK_LINE = '## == Schema Info ==';
+
+sub new {
+    args(
+        my $class => 'ClassName',
+        my $dbh  =>  'DBI::db',
+    );
+
+    bless {
+        dbh => $dbh,
+        driver => '',
+    }, $class;
+}
+
+sub driver {
+    my $self = shift;
+    $self->{driver} ||= do {
+        my $driver_class = sprintf('%s::Driver::%s', __PACKAGE__, $self->{dbh}->{Driver}->{Name});
+        Module::Load::load($driver_class);
+        $driver_class->new(dbh => $self->{dbh});
+    };
+}
+
+sub get_table_ddl {
+    args(
+        my $self,
+        my $table_name => 'Str',
+    );
+    return $self->driver->table_ddl(table_name => $table_name);
+}
+
+sub write_files {
+    args(
+        my $self,
+        my $dir => 'Str',
+    );
+    
+   my $inspector = DBIx::Inspector->new(dbh => $self->{dbh});
+    for my $table_info ($inspector->tables) {
+        my $table_name = $table_info->name;
+        my $f_path = catfile($dir, _camelize($table_name).'.pm');
+        next unless ( -e $f_path);
+        my $content < io($f_path);
+
+        # clean
+        $content =~ s/^$BLOCK_LINE.+$BLOCK_LINE\n\n//gms;
+
+        my $ddl = $self->get_table_ddl(table_name => $table_name);
+        my $annotate = join(
+            "\n" => 
+            $BLOCK_LINE,
+            (map { '# '.$_} split('\n', $ddl)),
+            $BLOCK_LINE
+        );
+
+        io($f_path) < ($annotate . "\n\n" . $content);
+    }
+    
+}
+
+sub _camelize {
+    my $s = shift;
+    join('', map{ ucfirst $_ } split(/(?<=[A-Za-z])_(?=[A-Za-z])|\b/, $s));
+}
 
 
 1;
+
 __END__
 
 =encoding utf-8
 
 =head1 NAME
 
-DBIx::Schema::Annotate - It's new $module
+DBIx::Schema::Annotate - Add ddl infomation to ORM file
 
 =head1 SYNOPSIS
 
     use DBIx::Schema::Annotate;
+    my $dbh = DBI->connect('....') or die $DBI::errstr;
+    my $annotate = DBIx::Schema::Annotate->new( dbh => $dbh );
+    $annotate->output(
+      dir       => '...',
+    );
+
+    # Amon2 + Teng
+    $ carton exec -- perl -Ilib -MMyApp -MDBIx::Schema::Annotate -e 'my $c = MyApp->bootstrap; DBIx::Schema::Annotate->new( dbh => $c->db->{dbh})->write_files(dir => q!lib/MyApp/DB/Row/!)'
 
 =head1 DESCRIPTION
 
