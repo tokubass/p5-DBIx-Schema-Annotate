@@ -21,6 +21,7 @@ sub new {
     bless {
         dbh => $dbh,
         driver => '',
+        tables => '',
     }, $class;
 }
 
@@ -30,6 +31,18 @@ sub driver {
         my $driver_class = sprintf('%s::Driver::%s', __PACKAGE__, $self->{dbh}->{Driver}->{Name});
         Module::Load::load($driver_class);
         $driver_class->new(dbh => $self->{dbh});
+    };
+}
+
+sub tables {
+    my $self = shift;
+    $self->{tables} ||= do {
+        my $inspector = DBIx::Inspector->new(dbh => $self->{dbh});
+        my @list;
+        for my $info ($inspector->tables) {
+            push @list, $info->name;
+        }
+        \@list;
     };
 }
 
@@ -47,9 +60,7 @@ sub write_files {
         my $dir => 'Str',
     );
     
-   my $inspector = DBIx::Inspector->new(dbh => $self->{dbh});
-    for my $table_info ($inspector->tables) {
-        my $table_name = $table_info->name;
+    for my $table_name (@{$self->tables}) {
         my $f_path = catfile($dir, _camelize($table_name).'.pm');
         next unless ( -e $f_path);
         my $content < io($f_path);
