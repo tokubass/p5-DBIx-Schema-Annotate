@@ -5,7 +5,6 @@ use warnings;
 use DBIx::Inspector;
 use Smart::Args;
 use IO::All;
-use File::Spec::Functions qw/catfile/;
 use Module::Load ();
 
 our $VERSION = "0.01";
@@ -54,31 +53,33 @@ sub get_table_ddl {
     return $self->driver->table_ddl(table_name => $table_name);
 }
 
+
 sub write_files {
     args(
         my $self,
         my $dir => 'Str',
     );
-    
+
     for my $table_name (@{$self->tables}) {
-        my $f_path = catfile($dir, _camelize($table_name).'.pm');
-        next unless ( -e $f_path);
-        my $content < io($f_path);
+        my $io = io->catfile($dir, _camelize($table_name).'.pm');
+        next unless ( -e $io->pathname);
 
-        # clean
-        $content =~ s/^$BLOCK_LINE.+$BLOCK_LINE\n\n//gms;
+        $io->print(do{
+            my $content = $io->all;
+            #clean
+            $content =~ s/^$BLOCK_LINE.+$BLOCK_LINE\n\n//gms;
+            my $ddl = $self->get_table_ddl(table_name => $table_name);
 
-        my $ddl = $self->get_table_ddl(table_name => $table_name);
-        my $annotate = join(
-            "\n" => 
-            $BLOCK_LINE,
-            (map { '# '.$_} split('\n', $ddl)),
-            $BLOCK_LINE
-        );
+            my $annotate = join(
+                "\n" => 
+                $BLOCK_LINE,
+                (map { '# '.$_} split('\n', $ddl)),
+                $BLOCK_LINE
+            );
 
-        io($f_path) < ($annotate . "\n\n" . $content);
+            sprintf("%s\n\n%s",$annotate, $content);
+        });
     }
-    
 }
 
 sub _camelize {
