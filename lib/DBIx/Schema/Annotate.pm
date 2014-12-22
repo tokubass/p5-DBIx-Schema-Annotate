@@ -95,7 +95,8 @@ __END__
 
 =head1 NAME
 
-DBIx::Schema::Annotate - Add ddl infomation to ORM file
+DBIx::Schema::Annotate - Add ddl infomation to ORM file. inspired by annotate_models.
+
 
 =head1 SYNOPSIS
 
@@ -104,6 +105,9 @@ DBIx::Schema::Annotate - Add ddl infomation to ORM file
     my $annotate = DBIx::Schema::Annotate->new( dbh => $dbh );
     $annotate->output(
       dir       => '...',
+      exception_rule => {
+        # todo
+      }
     );
 
     # Amon2 + Teng
