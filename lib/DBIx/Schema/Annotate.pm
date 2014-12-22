@@ -53,6 +53,25 @@ sub get_table_ddl {
     return $self->driver->table_ddl(table_name => $table_name);
 }
 
+sub clean {
+    args(
+        my $self,
+        my $dir => 'Str',
+    );
+
+    for my $table_name (@{$self->tables}) {
+        my $f_path = io->catfile($dir, _camelize($table_name).'.pm');
+        next unless ( -e $f_path);
+
+        my $io = io($f_path);
+        $io->print(do{
+            my $content = $io->all;
+            $content =~ s/^$BLOCK_LINE.+$BLOCK_LINE\n\n//gms;
+            $content;
+        });
+    }
+
+}
 
 sub write_files {
     args(
