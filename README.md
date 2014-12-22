@@ -1,6 +1,6 @@
 # NAME
 
-DBIx::Schema::Annotate - Add ddl infomation to ORM file
+DBIx::Schema::Annotate - Add ddl infomation to ORM file. inspired by annotate\_models.
 
 # SYNOPSIS
 
@@ -9,6 +9,9 @@ DBIx::Schema::Annotate - Add ddl infomation to ORM file
     my $annotate = DBIx::Schema::Annotate->new( dbh => $dbh );
     $annotate->output(
       dir       => '...',
+      exception_rule => {
+        # todo
+      }
     );
 
     # Amon2 + Teng
