@@ -20,7 +20,8 @@ DBIx::Schema::Annotate - Add table schema as comment to your ORM file. This modu
 
 # DESCRIPTION
 
-schema is added to pm file of specified path follower of the same name as table.
+Schema is added to pm file of specified path follower of the same name as table.
+This is supporting MySQL and SQLite.
 
 # METHODS
 
@@ -30,7 +31,7 @@ Constructor.
 
 ## write\_files( dir => 'path/to/...' )
 
-schema is added to pm file of 'path/to/...' follower of the same name as table.
+Schema is added to pm file of 'path/to/...' follower of the same name as table.
 
 # LICENSE
 
