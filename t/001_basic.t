@@ -7,6 +7,7 @@ use File::Path qw/make_path/;
 use File::Temp qw/ tempdir /;
 
 my $dbh = t::Utils->setup_dbh;
+
 my $sql1 =<<END;
 CREATE TABLE mock_basic (
   id   integer,
@@ -15,6 +16,8 @@ CREATE TABLE mock_basic (
 )
 END
 chomp($sql1);
+my $sql1_index='CREATE INDEX tet_index on mock_basic(name)';
+
 
 my $sql2 =<<END;
 CREATE TABLE mock_basic2 (
@@ -26,9 +29,9 @@ END
 chomp($sql2);
 
 my $annotate = DBIx::Schema::Annotate->new( dbh => $dbh );
-
 $dbh->do($sql1);
-is($annotate->get_table_ddl( table_name => 'mock_basic' ), $sql1);
+$dbh->do($sql1_index);
+is($annotate->get_table_ddl( table_name => 'mock_basic' ), join("\n", $sql1, $sql1_index));
 
 $dbh->do($sql2);
 is($annotate->get_table_ddl( table_name => 'mock_basic2' ), $sql2);
@@ -53,6 +56,7 @@ is($dest->all."\n", <<"END");
 #   name text,
 #   primary key ( id )
 # )
+# CREATE INDEX tet_index on mock_basic(name)
 ## == Schema Info ==
 
 $src_content
