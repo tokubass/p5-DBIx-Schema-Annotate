@@ -67,6 +67,6 @@
          "web" : "https://github.com/tokubass/p5-DBIx-Schema-Annotate"
       }
    },
-   "version" : "0.02",
+   "version" : "0.03",
    "x_authority" : "cpan:TOKUBASS"
 }
