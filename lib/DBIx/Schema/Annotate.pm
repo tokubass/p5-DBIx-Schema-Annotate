@@ -115,15 +115,16 @@ __END__
 
 =head1 NAME
 
-DBIx::Schema::Annotate - Add ddl infomation to ORM file. inspired by annotate_models.
+DBIx::Schema::Annotate - Add table schema as comment to your ORM file. This module is inspired by annotate_models.
 
 
 =head1 SYNOPSIS
 
     use DBIx::Schema::Annotate;
+
     my $dbh = DBI->connect('....') or die $DBI::errstr;
     my $annotate = DBIx::Schema::Annotate->new( dbh => $dbh );
-    $annotate->output(
+    $annotate->write_files(
       dir       => '...',
       exception_rule => {
         # todo
@@ -135,7 +136,17 @@ DBIx::Schema::Annotate - Add ddl infomation to ORM file. inspired by annotate_mo
 
 =head1 DESCRIPTION
 
-DBIx::Schema::Annotate is ...
+schema is added to pm file of specified path follower of the same name as table.
+
+=head1 METHODS
+
+=head2 new( dbh => $dbh )
+
+Constructor.
+
+=head2 write_files( dir => 'path/to/...' )
+
+schema is added to pm file of 'path/to/...' follower of the same name as table.
 
 =head1 LICENSE
 

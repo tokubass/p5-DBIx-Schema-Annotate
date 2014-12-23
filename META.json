@@ -1,10 +1,10 @@
 {
-   "abstract" : "Add ddl infomation to ORM file. inspired by annotate_models.",
+   "abstract" : "Add table schema as comment to your ORM file. This module is inspired by annotate_models.",
    "author" : [
       "tokubass <tokubass@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.2.1, CPAN::Meta::Converter version 2.140640",
+   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "perl_5"
    ],
