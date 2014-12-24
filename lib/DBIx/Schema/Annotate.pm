@@ -7,7 +7,7 @@ use Smart::Args;
 use IO::All;
 use Module::Load ();
 
-our $VERSION = "0.03";
+our $VERSION = "0.04";
 
 our $BLOCK_LINE = '## == Schema Info ==';
 
