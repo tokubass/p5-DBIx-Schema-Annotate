@@ -7,7 +7,7 @@ use Smart::Args;
 use IO::All;
 use Module::Load ();
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 our $BLOCK_LINE = '## == Schema Info ==';
 
@@ -66,7 +66,7 @@ sub clean {
         my $io = io($f_path);
         $io->print(do{
             my $content = $io->all;
-            $content =~ s/^$BLOCK_LINE.+$BLOCK_LINE\n\n//gms;
+            $content =~ s/^$BLOCK_LINE\n.+$BLOCK_LINE\n\n//gms;
             $content;
         });
     }
@@ -79,16 +79,23 @@ sub write_files {
         my $dir => 'Str',
     );
 
+  TABLE:
     for my $table_name (@{$self->tables}) {
         my $io = io->catfile($dir, _camelize($table_name).'.pm');
-        next unless ( -e $io->pathname);
+        next TABLE unless ( -e $io->pathname);
 
         $io->print(do{
             my $content = $io->all;
-            #clean
-            $content =~ s/^$BLOCK_LINE.+$BLOCK_LINE\n\n//gms;
             my $ddl = $self->get_table_ddl(table_name => $table_name);
 
+            if ($content =~ m/^$BLOCK_LINE\n(.+)\n$BLOCK_LINE\n\n/ms) {
+                my $ddl_in_file = $1;
+                $ddl_in_file =~ s/^# //gms;
+                next TABLE if $ddl_in_file eq $ddl;
+            }
+
+            #clean
+            $content =~ s/^$BLOCK_LINE\n.+$BLOCK_LINE\n\n//gms;
             my $annotate = join(
                 "\n" => 
                 $BLOCK_LINE,
