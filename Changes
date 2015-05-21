@@ -2,6 +2,8 @@ Revision history for Perl extension DBIx-Schema-Annotate
 
 {{$NEXT}}
 
+    - not do anything if there is no difference
+
 0.04 2014-12-24T03:29:04Z
 
     - update document
