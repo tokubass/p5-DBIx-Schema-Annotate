@@ -19,7 +19,12 @@ sub import {
 sub setup_dbh {
     shift;
     my $file = shift || ':memory:';
-    DBI->connect('dbi:SQLite:'.$file,'','',{RaiseError => 1, PrintError => 0, AutoCommit => 1});
+    DBI->connect('dbi:SQLite:'.$file,'','',{
+        RaiseError => 1,
+        PrintError => 0,
+        AutoCommit => 1,
+        sqlite_unicode => 1,
+    });
 }
 
 1;

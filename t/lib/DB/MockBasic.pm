@@ -1,6 +1,5 @@
 package  DB::MockBasic;
 
-
 sub new {
     'hogehoge'
 }

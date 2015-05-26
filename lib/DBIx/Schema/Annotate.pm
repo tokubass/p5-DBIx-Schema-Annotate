@@ -2,6 +2,8 @@ package DBIx::Schema::Annotate;
 use 5.008001;
 use strict;
 use warnings;
+use utf8;
+use Encode;
 use DBIx::Inspector;
 use Smart::Args;
 use IO::All;
@@ -87,6 +89,7 @@ sub write_files {
         $io->print(do{
             my $content = $io->all;
             my $ddl = $self->get_table_ddl(table_name => $table_name);
+            $ddl = encode_utf8($ddl);
 
             if ($content =~ m/^$BLOCK_LINE\n(.+)\n$BLOCK_LINE\n\n/ms) {
                 my $ddl_in_file = $1;
